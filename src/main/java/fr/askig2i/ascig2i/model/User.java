@@ -8,5 +8,4 @@ import jakarta.persistence.Id;
 public class User {
     @Id
     private Long id;
-    @Column(name = "")
 }
