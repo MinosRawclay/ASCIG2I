@@ -3,19 +3,17 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd"
              version="3.2">
-
-    <persistence-unit name="hopitalPU">
+    <persistence-unit name="ASCIG2I">
         <class>fr.askig2i.ascig2i.model.User</class>
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/hopital"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/ASCIG2I"/>
             <property name="jakarta.persistence.jdbc.user" value="root"/>
-            <property name="jakarta.persistence.jdbc.password" value=""/>
+            <property name="jakarta.persistence.jdbc.password" value="root"/>
             <property name="jakarta.persistence.schema-generation.database.action" value="none"/>
             <property name="jakarta.persistence.schema-generation.scripts.action" value="drop-and-create"/>
             <property name="jakarta.persistence.schema-generation.scripts.create-target" value="creation_table"/>
             <property name="jakarta.persistence.schema-generation.scripts.drop-target" value="drop_table"/>
         </properties>
     </persistence-unit>
-
 </persistence>
