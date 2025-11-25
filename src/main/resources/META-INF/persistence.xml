@@ -5,12 +5,15 @@
              version="3.2">
     <persistence-unit name="ASCIG2I">
         <class>fr.askig2i.ascig2i.model.User</class>
+        <class>fr.askig2i.ascig2i.model.Category</class>
+        <class>fr.askig2i.ascig2i.model.Notification</class>
+        <class>fr.askig2i.ascig2i.model.Password</class>
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/ASCIG2I"/>
             <property name="jakarta.persistence.jdbc.user" value="root"/>
             <property name="jakarta.persistence.jdbc.password" value="root"/>
-            <property name="jakarta.persistence.schema-generation.database.action" value="none"/>
+            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
             <property name="jakarta.persistence.schema-generation.scripts.action" value="drop-and-create"/>
             <property name="jakarta.persistence.schema-generation.scripts.create-target" value="creation_table"/>
             <property name="jakarta.persistence.schema-generation.scripts.drop-target" value="drop_table"/>

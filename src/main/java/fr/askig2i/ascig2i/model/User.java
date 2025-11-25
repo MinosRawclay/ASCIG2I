@@ -23,7 +23,12 @@ public class User {
     @Column(name = "PASSWORD", nullable = false, length = 100)
     private String password;
 
-    @ManyToMany(mappedBy = "LIAISON_USER")
+    @ManyToMany
+    @JoinTable(
+            name = "LIAISON_USER",
+            joinColumns = @JoinColumn(name = "ID_USER"),
+            inverseJoinColumns = @JoinColumn(name = "ID_PASSWORD")
+    )
     private Set<Password> passwordSet;
 
 

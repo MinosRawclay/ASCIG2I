@@ -2,10 +2,7 @@ package fr.askig2i.ascig2i.model;
 
 import jakarta.persistence.*;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 
@@ -14,13 +11,13 @@ public class Password {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "ID_PASSWORD")
     private int id;
-    @Column(name="SERVICENAME")
+    @Column(name="SERVICENAME", length = 50)
     private String serviceName;
-    @Column(name="LOGIN")
+    @Column(name="LOGIN", length = 50)
     private String login;
-    @Column(name="ENCRYPTPASSWORD")
+    @Column(name="ENCRYPTPASSWORD", length = 204)
     private String encryptedPassword;
-    @Column(name="URL")
+    @Column(name="URL", length = 255)
     private String url;
 
     @ManyToMany
@@ -38,6 +35,28 @@ public class Password {
     )
     private Set<User> users;
 
+    public Password() {
+        super();
+        serviceName = "";
+        login = "";
+        encryptedPassword = "";
+        url = "";
+        categories = new HashSet<>();
+    }
+
+    public Password(String serviceName, String login, String password, String url) {
+        if(serviceName==null || serviceName.length()>=50){return;}
+        if(login==null || login.length()>=50){return;}
+        if(password==null || password.length()>=50){return;}
+        if(url==null || url.length()>=255){return;}
+        this.serviceName = serviceName;
+        this.login = login;
+        this.encryptedPassword = this.encrypt(password);
+        this.url = url;
+        this.categories = new HashSet<>();
+        this.users = new HashSet<>();
+
+    }
 
     public String getServiceName() {
         return serviceName;

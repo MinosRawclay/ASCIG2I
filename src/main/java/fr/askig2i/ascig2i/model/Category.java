@@ -2,6 +2,7 @@ package fr.askig2i.ascig2i.model;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -12,18 +13,46 @@ public class Category {
     @Column(name = "ID_CATEGORY")
     private Long id;
 
-    @Column(name = "NAME")
+    @Column(name = "NAME", nullable = false, length = 50)
     private String name;
-    @Column(name = "DESCRIPTION")
+    @Column(name = "DESCRIPTION", length = 255)
     private String description;
 
-    @ManyToMany(mappedBy = "LIAISON_CATEGORY")
+
+    @ManyToMany
+    @JoinTable(
+            name = "LIAISON_CATEGORY",
+            joinColumns = @JoinColumn(name = "ID_CATEGORY"),
+            inverseJoinColumns = @JoinColumn(name = "ID_PASSWORD")
+    )
     private Set<Password> passwordSet;
 
-    Category() {
-        name = null;
-        description = null;
-
+    public Category() {
+        name = "";
+        description = "";
+        passwordSet = new HashSet<>();
     }
+
+    public Category(String name,  String description) {
+        if(name==null || name.length()>=50){return;}
+        if(description==null || description.length()>=255){return;}
+        this.name = name;
+        this.description = description;
+        passwordSet = new HashSet<>();
+    }
+
+    public void addPassword(Password password){
+        if(password != null && !this.passwordSet.contains(password)){
+            this.passwordSet.add(password);
+            password.setCategory(this);
+        }
+    }
+
+    public void setPassword(Password password){
+        if(password!=null){
+            this.passwordSet.add(password);
+        }
+    }
+
 
 }
