@@ -2,9 +2,17 @@ package fr.askig2i.ascig2i.model;
 
 import jakarta.persistence.*;
 
+import javax.management.relation.Role;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
+@Table(name="USER",
+        uniqueConstraints={
+        @UniqueConstraint(columnNames ={"FIRSTNAME", "LASTNAME"})
+})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +26,12 @@ public class User {
     private String password;
     @Column(name = "URL", nullable = false, length = 255)
     private String url;
+
+    @ManyToMany(mappedBy = "LIAISON_USER")
+    private Set<Password> passwordSet;
+
+
+
 
     public User(String servName, String login, String password, String url) {
         this.servName = "";

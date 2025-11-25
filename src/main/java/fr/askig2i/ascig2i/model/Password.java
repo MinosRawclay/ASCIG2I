@@ -2,25 +2,42 @@ package fr.askig2i.ascig2i.model;
 
 import jakarta.persistence.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 
 public class Password {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name = "ID_PASSWORD")
     private int id;
-    @Column(name="serviceName")
+    @Column(name="SERVICENAME")
     private String serviceName;
-    @Column(name="login")
+    @Column(name="LOGIN")
     private String login;
-    @Column(name="encryptedPassword")
+    @Column(name="ENCRYPTPASSWORD")
     private String encryptedPassword;
-    @Column(name="url")
+    @Column(name="URL")
     private String url;
-    @Column(name="Categorie")
-    private List<Category> categorie;
+
+    @ManyToMany
+    @JoinTable(
+            name = "LIAISON_CATEGORY",
+            joinColumns = @JoinColumn(name = "ID_PASSWORD"),
+            inverseJoinColumns = @JoinColumn(name = "ID_CATEGORY")
+    )
+    private Set<Category> categories;
+    @ManyToMany
+    @JoinTable(
+            name = "LIAISON_USER",
+            joinColumns = @JoinColumn(name = "ID_PASSWORD"),
+            inverseJoinColumns = @JoinColumn(name = "ID_USER")
+    )
+    private Set<User> users;
+
 
     public String getServiceName() {
         return serviceName;
@@ -54,12 +71,12 @@ public class Password {
         this.url = url;
     }
 
-    public List<Category> getCategorie() {
-        return categorie;
+    public Set<Category> getCategorie() {
+        return categories;
     }
 
-    public void setCategorie(List<Category> categorie) {
-        this.categorie = categorie;
+    public void setCategorie(Set<Category> categories) {
+        this.categories = categories;
     }
 
     @Override
@@ -81,7 +98,7 @@ public class Password {
                 ", login='" + login + '\'' +
                 ", encryptedPassword='" + encryptedPassword + '\'' +
                 ", url='" + url + '\'' +
-                ", categorie=" + categorie +
+                ", categorie=" + categories +
                 '}';
     }
 }
