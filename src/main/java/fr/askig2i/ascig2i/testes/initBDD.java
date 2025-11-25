@@ -21,7 +21,7 @@ public class initBDD {
         User user4 = new User("Maxime","maximillien");
 
         //Category category1 = new Category("","");
-
+        //push
 
 
         //em.persist(serv3);
