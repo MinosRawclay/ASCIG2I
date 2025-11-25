@@ -19,4 +19,11 @@ public class Category {
 
     @ManyToMany(mappedBy = "LIAISON_CATEGORY")
     private Set<Password> passwordSet;
+
+    Category() {
+        name = null;
+        description = null;
+
+    }
+
 }
