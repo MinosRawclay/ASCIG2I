@@ -21,18 +21,18 @@ public class Password {
     private String url;
 
     @ManyToMany
-    @JoinTable(
+    /*@JoinTable(
             name = "LIAISON_CATEGORY",
             joinColumns = @JoinColumn(name = "ID_PASSWORD"),
             inverseJoinColumns = @JoinColumn(name = "ID_CATEGORY")
-    )
+    )*/
     private Set<Category> categories;
     @ManyToMany
-    @JoinTable(
+    /*@JoinTable(
             name = "LIAISON_USER",
             joinColumns = @JoinColumn(name = "ID_PASSWORD"),
             inverseJoinColumns = @JoinColumn(name = "ID_USER")
-    )
+    )*/
     private Set<User> users;
 
     public Password() {
@@ -90,13 +90,31 @@ public class Password {
         this.url = url;
     }
 
-    public Set<Category> getCategorie() {
-        return categories;
+
+    public void setCategory(Category category){
+        if(category!=null){
+            this.categories.add(category);
+        }
+    }
+    public void addCategoty(Category category){
+        if(category != null && !this.categories.contains(category)){
+            this.categories.add(category);
+            category.setPassword(this);
+        }
     }
 
-    public void setCategorie(Set<Category> categories) {
-        this.categories = categories;
+    public void setUser(User user){
+        if(user!=null){
+            this.users.add(user);
+        }
     }
+    public void addUser(User user){
+        if(user != null && !this.categories.contains(user)){
+            this.users.add(user);
+            user.setPassword(this);
+        }
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -106,7 +124,7 @@ public class Password {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hashCode(login + serviceName);
     }
 
     @Override
@@ -120,4 +138,34 @@ public class Password {
                 ", categorie=" + categories +
                 '}';
     }
+
+    public String encrypt(String pwd) {
+        int key = (int) (this.hashCode()/0x44 - 4) & 0xFFFF; // key
+        StringBuilder builder = new StringBuilder();
+
+        for (char c : pwd.toCharArray()) {
+            long encrypted = ((long)c) ^ key;
+            // convertit en hex sur 16 caractères (padding avec des zéros)
+            builder.append(String.format("%04X", encrypted));
+        }
+
+        return builder.toString();
+    }
+
+    public String decrypt(String encrypted) {
+        int key = (int)(this.hashCode() /0x44 - 4) & 0xFFFF; // même key
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < encrypted.length(); i += 4) {
+            String hex = encrypted.substring(i, i + 4);
+            int encryptedChar = Integer.parseUnsignedInt(hex, 16);
+            char original = (char)(encryptedChar ^ key);
+            builder.append(original);
+        }
+
+        return builder.toString();
+    }
+
+
+
 }

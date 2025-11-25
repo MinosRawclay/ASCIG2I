@@ -3,10 +3,7 @@ package fr.askig2i.ascig2i.model;
 import jakarta.persistence.*;
 
 import javax.management.relation.Role;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name="USER",
@@ -38,12 +35,26 @@ public class User {
         this.login="";
         this.password="";
         if ((login != null) && login.length() < 50) {this.login=login;}
-        if ((password != null) && password.length() < 50) {this.password=password;}
+        if ((password != null) && password.length() < 50) {this.password=password;
+        this.passwordSet = new HashSet<>();
+        }
     }
 
     public User() {
         this.login="";
         this.password="";
+    }
+
+    public void setPassword(Password password){
+        if(password!=null){
+            this.passwordSet.add(password);
+        }
+    }
+    public void addPassword(Password password){
+        if(password != null && !this.passwordSet.contains(password)){
+            this.passwordSet.add(password);
+            password.setUser(this);
+        }
     }
 
     @Override
