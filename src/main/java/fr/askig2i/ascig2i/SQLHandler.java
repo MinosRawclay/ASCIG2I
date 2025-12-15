@@ -20,6 +20,7 @@ public class SQLHandler {
          query.setParameter("login", lg);
          query.setParameter("password", pwd);
          List<User> users = query.getResultList();
+         if(users.isEmpty()){return null;}
         return users.getFirst();
     }
 
