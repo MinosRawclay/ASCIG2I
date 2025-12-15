@@ -8,7 +8,7 @@ import java.util.List;
 
 public class SQLHandler {
 
-    public static boolean checkUser(String lg, String pwd, EntityManager em){
+    public static User checkUser(String lg, String pwd, EntityManager em){
         pwd = EncryptionManager.encrypt(pwd, lg.hashCode());
 
         String strQuery = "SELECT u FROM User u "
@@ -18,7 +18,13 @@ public class SQLHandler {
          query.setParameter("login", lg);
          query.setParameter("password", pwd);
          List<User> users = query.getResultList();
-        return !users.isEmpty();
+        return users.getFirst();
     }
+
+    //Afficher Passwords pour User
+    //Filtrer Passwords Par cat
+    //Add Password a user
+    //Add cat a user
+
 
 }
