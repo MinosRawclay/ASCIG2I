@@ -53,7 +53,7 @@ public class LoginFrame extends JFrame{
                 String password = new String(passwordText.getPassword());
 
                 // Vérification des informations de connexion
-                if (!SQLHandler.checkUser(username, password, em).isEmpty()) {
+                if (SQLHandler.checkUser(username, password, em)==null) {
                     messageLabel.setText("Successfully logged!");
                     messageLabel.setForeground(Color.GREEN);
                 } else {

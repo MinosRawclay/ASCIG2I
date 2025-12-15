@@ -22,6 +22,7 @@ public class SQLHandler {
     }
 
     //Afficher Passwords pour User
+
     //Filtrer Passwords Par cat
     //Add Password a user
     //Add cat a user
