@@ -19,7 +19,7 @@ public class Password {
     private String encryptedPassword;
     @Column(name="URL", length = 255)
     private String url;
-
+    private static int key = 0x44;
     @ManyToMany
     /*@JoinTable(
             name = "LIAISON_CATEGORY",
@@ -51,7 +51,7 @@ public class Password {
         if(url==null || url.length()>=255){return;}
         this.serviceName = serviceName;
         this.login = login;
-        this.encryptedPassword = this.encrypt(password);
+        this.encryptedPassword = EncryptionManager.encrypt(password, login.hashCode());
         this.url = url;
         this.categories = new HashSet<>();
         this.users = new HashSet<>();
@@ -139,32 +139,7 @@ public class Password {
                 '}';
     }
 
-    public String encrypt(String pwd) {
-        int key = (int) (this.hashCode()/0x44 - 4) & 0xFFFF; // key
-        StringBuilder builder = new StringBuilder();
 
-        for (char c : pwd.toCharArray()) {
-            long encrypted = ((long)c) ^ key;
-            // convertit en hex sur 16 caractères (padding avec des zéros)
-            builder.append(String.format("%04X", encrypted));
-        }
-
-        return builder.toString();
-    }
-
-    public String decrypt(String encrypted) {
-        int key = (int)(this.hashCode() /0x44 - 4) & 0xFFFF; // même key
-        StringBuilder builder = new StringBuilder();
-
-        for (int i = 0; i < encrypted.length(); i += 4) {
-            String hex = encrypted.substring(i, i + 4);
-            int encryptedChar = Integer.parseUnsignedInt(hex, 16);
-            char original = (char)(encryptedChar ^ key);
-            builder.append(original);
-        }
-
-        return builder.toString();
-    }
 
 
 

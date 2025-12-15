@@ -30,12 +30,11 @@ public class User {
 
 
 
-
     public User(String login, String password) {
         this.login="";
         this.password="";
         if ((login != null) && login.length() < 50) {this.login=login;}
-        if ((password != null) && password.length() < 50) {this.password=password;
+        if ((password != null && login != null) && password.length() < 50) {this.password=EncryptionManager.encrypt(password, login.hashCode());
         this.passwordSet = new HashSet<>();
         }
     }
@@ -63,4 +62,6 @@ public class User {
                 "login='" + login + '\'' +
                 '}';
     }
+
+
 }
