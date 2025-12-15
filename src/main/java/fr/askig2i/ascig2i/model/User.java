@@ -39,6 +39,21 @@ public class User {
         }
     }
 
+    public Set<Password> getPasswordSet() {
+        Set<Password> temp = new HashSet<>();
+        temp.addAll(this.passwordSet);
+        return temp;
+    }
+    public Set<Password> getPwdByCategory(Category cat) {
+        Set<Password> temp = new HashSet<>();
+        for(Password pwd : this.passwordSet){
+            if(pwd.hasCategory(cat)){
+                temp.add(pwd);
+            }
+        }
+        return temp;
+    }
+
     public User() {
         this.login="";
         this.password="";

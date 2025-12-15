@@ -90,6 +90,9 @@ public class Password {
         this.url = url;
     }
 
+    public boolean hasCategory(Category cat){
+        return this.categories.contains(cat);
+    }
 
     public void setCategory(Category category){
         if(category!=null){
