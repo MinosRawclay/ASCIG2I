@@ -18,6 +18,11 @@ public final class UiTheme {
     public static final Color TEXT_NORMAL  = new Color(84,84,84);
     public static final Color TEXT_PRESSED = new Color(220, 220, 200);
 
+    // === Text fields ===
+    public static final Color TF_BG = Color.WHITE;
+    public static final Color TF_PLACEHOLDER = Color.GRAY;
+    public static final Color TF_BORDER = new Color(180, 180, 180);
+
     // === Backgrounds ===
     public static final Color BACKGROUND_START = new Color(255, 102, 196);
     public static final Color BACKGROUND_END = new Color(82, 112, 255);

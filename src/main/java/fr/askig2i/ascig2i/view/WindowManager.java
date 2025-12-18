@@ -1,10 +1,14 @@
 package fr.askig2i.ascig2i.view;
 
+import com.mysql.cj.log.Log;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class WindowManager extends JFrame {
-    
+
+    LoginPanel loginPanel;
+
     public WindowManager() {
         setSize(600, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -28,17 +32,17 @@ public class WindowManager extends JFrame {
                 g2.fillRect(0, 0, getWidth(), getHeight());
             }
         });
+
+        LoginPanel loginPanel = new LoginPanel();
+
+        this.setLayout(new BorderLayout());
+        this.add(loginPanel, BorderLayout.CENTER);
+
     }
 
     static void main() {
-        JFrame frame = new WindowManager();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        LoginPanel loginFrame = new LoginPanel();
-        frame.add(loginFrame);
-        loginFrame.setVisible(true);
+        WindowManager frame = new WindowManager();
         frame.setVisible(true);
-
-
         //JFrame lg = new LoginFrame();
         //lg.setVisible(true);
     }

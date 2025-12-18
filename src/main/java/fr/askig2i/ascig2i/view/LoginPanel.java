@@ -8,6 +8,8 @@ import jakarta.persistence.Persistence;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class LoginPanel extends JPanel {
 
@@ -20,60 +22,96 @@ public class LoginPanel extends JPanel {
     private Button loginButton;
     private Button newUserButton;
 
-    public LoginPanel() {
+    private void addPlaceholder(JTextField field, String placeholder) {
+        field.setText(placeholder);
+        field.setForeground(Color.GRAY);
 
-        // ===== Fond dégradé du panel =====
+        field.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (field.getText().equals(placeholder)) {
+                    field.setText("");
+                    field.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (field.getText().isEmpty()) {
+                    field.setText(placeholder);
+                    field.setForeground(Color.GRAY);
+                }
+            }
+        });
+    }
+
+    public LoginPanel() {
+        // ===== pas de fond =====
         setLayout(new GridBagLayout());
         setOpaque(false);
 
         // ===== Panel central =====
-        UiPanel centerPanel = new UiPanel(
-                new Color(90, 90, 180),
-                new Color(140, 140, 220)
-        );
+        UiPanel centerPanel = new UiPanel();
         centerPanel.setOpacity(200);
         centerPanel.setArc(100);
         centerPanel.setPreferredSize(new Dimension(320, 260));
         centerPanel.setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(10, 20, 10, 20);
+        gbc.weightx = 1.0;
+        gbc.insets = new Insets(0,20,0,20);  //top padding
+        //gbc.gridx = 0;
+        //gbc.fill = GridBagConstraints.HORIZONTAL;
+        //gbc.insets = new Insets(10, 20, 10, 20);
 
         // ===== Text Login =====
         JLabel textLogin = new JLabel("Login", SwingConstants.CENTER);
         textLogin.setFont(new Font("Arial", Font.BOLD, 22));
         textLogin.setForeground(UiTheme.TEXT_PRESSED);
+        gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.gridwidth = 4;
+
         centerPanel.add(textLogin, gbc);
         // ===== Champ Login =====
-        JTextField loginField = new JTextField();
-        loginField.setPreferredSize(new Dimension(200, 30));
+        UiTexteField loginField = new UiTexteField(20);
+        //loginField.setPreferredSize(new Dimension(200, 30));
+        loginField.setColumns(30);
         loginField.setFont(new Font("Arial", Font.PLAIN, 14));
-
+        gbc.gridx = 1;
         gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        addPlaceholder(loginField, "Username");
         centerPanel.add(loginField, gbc);
 
         // ===== Text Password =====
         JLabel textPassword = new JLabel("Password", SwingConstants.CENTER);
         textPassword.setFont(new Font("Arial", Font.BOLD, 22));
         textPassword.setForeground(UiTheme.TEXT_PRESSED);
+        gbc.gridx = 0;
         gbc.gridy = 2;
+        gbc.gridwidth = 4;
+        gbc.insets = new Insets(10,20,0,20);  //top padding
         centerPanel.add(textPassword, gbc);
+        gbc.insets = new Insets(0,20,0,20);  //top padding
+
         // ===== Champ Password =====
-        JPasswordField passwordField = new JPasswordField();
+        UiPasswordField passwordField = new UiPasswordField(20);
         passwordField.setPreferredSize(new Dimension(200, 30));
+        //passwordField.setColumns(30);
         passwordField.setFont(new Font("Arial", Font.PLAIN, 14));
+        gbc.gridx = 1;
         gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        addPlaceholder(passwordField, "password");
         centerPanel.add(passwordField, gbc);
 
         // ==== Message ====
-        JLabel messageLabel = new JLabel("");
-        messageLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        JLabel messageLabel = new JLabel("-_-");
+        messageLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         messageLabel.setForeground(UiTheme.TEXT_PRESSED);
-        gbc.gridy = 6;
-        centerPanel.add(messageLabel, gbc);
+
 
         // ===== Bouton Login =====
         Button loginButton = new Button("Login", e -> {
@@ -95,7 +133,10 @@ public class LoginPanel extends JPanel {
         });
         loginButton.setPreferredSize(new Dimension(180, 40));
         loginButton.setOpacity(220);
+        gbc.gridx = 1;
         gbc.gridy = 4;
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(20,20,0,0);  //top padding
         centerPanel.add(loginButton, gbc);
 
         // ===== Bouton New User =====
@@ -104,14 +145,25 @@ public class LoginPanel extends JPanel {
         });
         newUserButton.setPreferredSize(new Dimension(180, 40));
         newUserButton.setOpacity(200);
-        gbc.gridy = 5;
+        gbc.gridx = 2;
+        gbc.gridy = 4;
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(20,10,0,20);  //top padding
         centerPanel.add(newUserButton, gbc);
 
-        add(centerPanel,0);
+        // ==== Message 2 ====
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = 4;
+        gbc.anchor = GridBagConstraints.PAGE_END; ;
+        gbc.insets = new Insets(10,20,0,20);  //top padding
+
+        centerPanel.add(messageLabel, gbc);
+
+        add(centerPanel);
     }
 
     // ===== Actions =====
-
     protected void onLogin() {
         String login = loginField.getText();
         char[] password = passwordField.getPassword();
