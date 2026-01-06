@@ -16,7 +16,7 @@ public class initBDD {
         EntityTransaction et = em.getTransaction();
         et.begin();
 
-        User user1 = new User("Raphael","askig2i");
+        User user1 = new User("test","test");
         User user2 = new User("Alexandre","askig2i");
         User user3 = new User("Quentin","salengro");
         User user4 = new User("Maxime","maximillien");

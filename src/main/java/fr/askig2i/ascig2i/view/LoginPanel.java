@@ -127,8 +127,7 @@ public class LoginPanel extends JPanel {
                 messageLabel.setText("Successfully logged!");
                 messageLabel.setForeground(Color.GREEN);
                 this.manager.setConnected(this.user);
-
-
+                manager.goHome();
             } else {
                 System.out.println("TEST2");
                 messageLabel.setText("Username or Password Incorrect.");

@@ -7,19 +7,14 @@ public class HeaderPanel extends JPanel {
     public HeaderPanel() {
         // ===== pas de fond =====
         setLayout(new GridBagLayout());
-        setOpaque(true);
-        setBackground(Color.white);
-
-        setLayout(new GridBagLayout());
-        setBackground(new Color(240, 240, 240)); // couleur du header
-
+        setOpaque(false);
+        //setBackground(Color.white);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 10, 5, 10); // marges internes
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         //GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.gridy = 0;
+
 
         // === Bouton Home ===
         ImageIcon iconCp = new ImageIcon(getClass().getResource("/img/home.png"));
@@ -33,35 +28,53 @@ public class HeaderPanel extends JPanel {
         homeButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         homeButton.addActionListener(e -> goHome());
 
-        gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
-        gbc.gridwidth = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 0; // ne s'étire pas
+        gbc.anchor = GridBagConstraints.WEST;
+
         add(homeButton, gbc);
+
+        // === Titre ===
+        JLabel titleLabel = new JLabel("Askig2i");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1; // prend tout l’espace disponible
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(titleLabel, gbc);
+
+        // === Button ===
+        Button btnLogin = new Button("UnLog",e->unlog());
+
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.weightx = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+
+        add(btnLogin, gbc);
+
 
 
     }
 
+    //TODO
     private void goHome(){}
 
+    //TODO
+    private void unlog(){}
+
     static void main() {
-        JFrame frame = new JFrame();
+        JFrame frame = new JFrame("Exemple Header");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 800);
-        frame.setLocationRelativeTo(null);
+        frame.setSize(800, 600);
 
-        // Créer le JPanel root
-        JPanel root = new JPanel();
-        root.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        root.setBackground(Color.GRAY);
+        frame.setLayout(new BorderLayout());
+        frame.add(new HeaderPanel(), BorderLayout.NORTH);
 
-        HeaderPanel panel = new HeaderPanel();
-        root.add(panel, gbc);
-        frame.add(root, BorderLayout.CENTER);
         frame.setVisible(true);
+
     }
 
 }

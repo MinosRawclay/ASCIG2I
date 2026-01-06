@@ -52,12 +52,9 @@ public class WindowManager extends JFrame {
         return this.user;
     }
 
-    public void login(){;
-        this.loginPanel.setVisible(true);
-        this.setVisible(true);
-        while(this.user == null);
+    public void goHome(){
+        this.homePanel.setVisible(false);
         this.loginPanel.setVisible(false);
-        this.homePanel.setVisible(true);
         this.setVisible(true);
     }
 
@@ -65,7 +62,8 @@ public class WindowManager extends JFrame {
 
     static void main() {
         WindowManager frame = new WindowManager();
-        frame.login();
+        //frame.login();
+        frame.setVisible(true);
 
     }
 }
