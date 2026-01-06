@@ -6,10 +6,10 @@ import fr.askig2i.ascig2i.model.Password;
 public class encription {
     static void main() {
         Password password1 = new Password(
-                "Netflix","raphel.0@gmail.com","askig2i","https://www.netflix.com");
+                "Netflix","raphael.0@gmail.com","askig2i","https://www.netflix.com");
 
         System.out.println(password1.getEncryptedPassword());
-        String decrypt = EncryptionManager.decrypt(password1.getEncryptedPassword(), 0x44);
+        String decrypt = EncryptionManager.decrypt(password1.getEncryptedPassword(), ("raphael.0@gmail.com").hashCode()    );
         System.out.println(decrypt);
 
 

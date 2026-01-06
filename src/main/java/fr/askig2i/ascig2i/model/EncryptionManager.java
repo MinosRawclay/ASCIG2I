@@ -2,7 +2,7 @@ package fr.askig2i.ascig2i.model;
 
 public class EncryptionManager {
     public static String encrypt(String pwd, int mod) {
-        int key = (int) (mod^2 - 4) & 0xFFFF; // key
+        int key = (int) (mod*mod - 4) & 0xFFFF; // key
         StringBuilder builder = new StringBuilder();
 
         for (char c : pwd.toCharArray()) {
@@ -15,7 +15,7 @@ public class EncryptionManager {
     }
 
     public static String decrypt(String encrypted, int mod) {
-        int key = (int)(mod^2  - 4) & 0xFFFF; // même key
+        int key = (int)(mod*mod  - 4) & 0xFFFF; // même key
         StringBuilder builder = new StringBuilder();
 
         for (int i = 0; i < encrypted.length(); i += 4) {

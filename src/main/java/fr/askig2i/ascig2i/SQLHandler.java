@@ -12,7 +12,7 @@ public class SQLHandler {
 
     public static User checkUser(String lg, String pwd, EntityManager em){
         pwd = EncryptionManager.encrypt(pwd, lg.hashCode());
-
+        System.out.printf(pwd);
         String strQuery = "SELECT u FROM User u "
          + "WHERE u.login = :login "
          + "AND u.password = :password";

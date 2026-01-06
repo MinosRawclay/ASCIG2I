@@ -121,7 +121,6 @@ public class LoginPanel extends JPanel {
             String password = new String(passwordField.getPassword());
 
             System.out.println(username + " : " + password);
-
             // Vérification des informations de connexion
             if ((this.user = SQLHandler.checkUser(username, password, em))!=null) {
                 System.out.println("TEST1");
