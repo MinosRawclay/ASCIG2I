@@ -14,6 +14,8 @@ public class ScrollPanel extends JPanel {
     ScrollPanel(ArrayList<Password> passwords) {
         // Panel principal pour empiler les cartes verticalement
         JPanel mainPanel = new JPanel();
+        mainPanel.setOpaque(false);
+
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         // Ajout de plusieurs cartes
         passwords.forEach(p -> {

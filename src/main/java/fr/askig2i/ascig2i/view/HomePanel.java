@@ -25,7 +25,7 @@ public class HomePanel extends JPanel {
 
         setLayout(new BorderLayout());
 
-        // HEADER (déjà existant chez toi)
+        // HEADER
         add(new HeaderPanel(), BorderLayout.NORTH);
 
         // CONTENU CENTRAL
@@ -53,7 +53,7 @@ public class HomePanel extends JPanel {
         gbc.weightx = 0.6;
         gbc.weighty = 0;
         gbc.anchor = GridBagConstraints.CENTER;
-        //add(buttonAddPassword, gbc);
+        contentPanel.add(buttonAddPassword, gbc);
 
 
         JPanel bottomButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
