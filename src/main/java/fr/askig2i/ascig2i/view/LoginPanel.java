@@ -13,6 +13,7 @@ import java.awt.event.FocusEvent;
 
 public class LoginPanel extends JPanel {
 
+    private WindowManager manager;
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("ASCIG2I");
     private EntityManager em = emf.createEntityManager();
     private User user;
@@ -45,7 +46,8 @@ public class LoginPanel extends JPanel {
         });
     }
 
-    public LoginPanel() {
+    public LoginPanel(WindowManager w) {
+        this.manager = w;
         // ===== pas de fond =====
         setLayout(new GridBagLayout());
         setOpaque(false);
@@ -125,6 +127,9 @@ public class LoginPanel extends JPanel {
                 System.out.println("TEST1");
                 messageLabel.setText("Successfully logged!");
                 messageLabel.setForeground(Color.GREEN);
+                this.manager.setConnected(this.user);
+
+
             } else {
                 System.out.println("TEST2");
                 messageLabel.setText("Username or Password Incorrect.");

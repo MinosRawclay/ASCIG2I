@@ -1,12 +1,13 @@
 package fr.askig2i.ascig2i.view;
 
 import com.mysql.cj.log.Log;
+import fr.askig2i.ascig2i.model.User;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class WindowManager extends JFrame {
-
+    private User user;
     LoginPanel loginPanel;
 
     public WindowManager() {
@@ -33,11 +34,20 @@ public class WindowManager extends JFrame {
             }
         });
 
-        LoginPanel loginPanel = new LoginPanel();
+
+        // Mettre en param le manager dans toutes les windows
+        LoginPanel loginPanel = new LoginPanel(this);
 
         this.setLayout(new BorderLayout());
         this.add(loginPanel, BorderLayout.CENTER);
 
+    }
+    public void setConnected(User u){
+        this.user = u;
+    }
+
+    public User getConnected(){
+        return this.user;
     }
 
     static void main() {
