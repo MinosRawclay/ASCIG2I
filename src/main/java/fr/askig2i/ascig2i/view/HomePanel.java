@@ -10,9 +10,11 @@ import java.awt.*;
 public class HomePanel extends JPanel {
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("ASCIG2I");
     private EntityManager em = emf.createEntityManager();
+    private WindowManager manager;
 
-    public HomePanel() {
+    public HomePanel(WindowManager manager) {
 
+        this.manager = manager;
         // ===== pas de fond =====
         setLayout(new GridBagLayout());
         setOpaque(false);

@@ -9,6 +9,7 @@ import java.awt.*;
 public class WindowManager extends JFrame {
     private User user;
     LoginPanel loginPanel;
+    HomePanel homePanel;
 
     public WindowManager() {
         setSize(600, 500);
@@ -37,6 +38,7 @@ public class WindowManager extends JFrame {
 
         // Mettre en param le manager dans toutes les windows
         LoginPanel loginPanel = new LoginPanel(this);
+        HomePanel homePannel = new HomePanel(this);
 
         this.setLayout(new BorderLayout());
         this.add(loginPanel, BorderLayout.CENTER);
@@ -50,10 +52,18 @@ public class WindowManager extends JFrame {
         return this.user;
     }
 
+    public void login(){;
+        this.loginPanel.setVisible(true);
+        this.setVisible(true);
+        while(this.user == null);
+        this.loginPanel.setVisible(false);
+        this.homePannel.setVisible(true);
+        this.setVisible(true);
+    }
+
     static void main() {
         WindowManager frame = new WindowManager();
-        frame.setVisible(true);
-        //JFrame lg = new LoginFrame();
-        //lg.setVisible(true);
+        frame.login();
+
     }
 }
