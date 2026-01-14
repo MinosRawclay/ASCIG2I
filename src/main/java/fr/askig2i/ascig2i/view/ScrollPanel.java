@@ -12,6 +12,9 @@ import java.util.Set;
 
 public class ScrollPanel extends JPanel {
     ScrollPanel(ArrayList<Password> passwords) {
+        // Rendre le ScrollPanel transparent
+        setOpaque(false);
+
         // Panel principal pour empiler les cartes verticalement
         JPanel mainPanel = new JPanel();
         mainPanel.setOpaque(false);
@@ -24,6 +27,8 @@ public class ScrollPanel extends JPanel {
         });
         // Ajout du scroll
         JScrollPane scrollPane = new JScrollPane(mainPanel);
+        scrollPane.setOpaque(false); // Rendre le JScrollPane transparent
+        scrollPane.getViewport().setOpaque(false); // Rendre le viewport transparent
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setPreferredSize(new Dimension(300, 600));

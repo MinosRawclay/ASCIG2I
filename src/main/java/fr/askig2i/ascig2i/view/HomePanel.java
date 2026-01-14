@@ -19,10 +19,8 @@ public class HomePanel extends JPanel {
     public HomePanel(WindowManager manager) {
         this.manager = manager;
 
-        // ===== pas de fond =====
         setOpaque(true);
         setBackground(Color.blue);
-
         setLayout(new BorderLayout());
 
         // HEADER
@@ -30,63 +28,53 @@ public class HomePanel extends JPanel {
 
         // CONTENU CENTRAL
         JPanel contentPanel = new JPanel(new GridBagLayout());
-        contentPanel.setBackground(new Color(130, 110, 255)); // dégradé géré ailleurs si besoin
+        contentPanel.setBackground(new Color(130, 110, 255));
         add(contentPanel, BorderLayout.CENTER);
+        GridBagConstraints gbcC = new GridBagConstraints();
+        gbcC.insets = new Insets(15, 15, 15, 15);
+        gbcC.fill = GridBagConstraints.BOTH;
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(15, 15, 15, 15);
-        gbc.fill = GridBagConstraints.BOTH;
+        // CONTENU GAUCHE - Augmentation de la largeur
+        JPanel leftPanel = new JPanel(new BorderLayout());
+        leftPanel.setBackground(new Color(130, 110, 255));
+        gbcC.gridx = 0;
+        gbcC.gridy = 0;
+        gbcC.weightx = 0.65; // Augmenté de 0.6 à 0.65
+        gbcC.weighty = 1.0;
+        contentPanel.add(leftPanel, gbcC);
 
         updatePasswords();
         ScrollPanel scrollPanel = new ScrollPanel(passwords);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridheight = 3;
-        gbc.weightx = 0;
-        gbc.weighty = 1;
-        gbc.anchor = GridBagConstraints.NORTH;
-        contentPanel.add(scrollPanel, gbc);
+        scrollPanel.setPreferredSize(new Dimension(450, 500)); // Largeur minimale garantie
+        leftPanel.add(scrollPanel, BorderLayout.CENTER);
 
-        Button buttonAddPassword = new Button("addPassword",e->newPassword());
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.weightx = 0.6;
-        gbc.weighty = 0;
-        gbc.anchor = GridBagConstraints.CENTER;
-        contentPanel.add(buttonAddPassword, gbc);
+        // CONTENU DROITE
+        JPanel rightPanel = new JPanel(new GridBagLayout());
+        rightPanel.setBackground(new Color(130, 110, 255));
+        gbcC.gridx = 1;
+        gbcC.weightx = 0.35; // Ajusté de 0.4 à 0.35
+        contentPanel.add(rightPanel, gbcC);
+        GridBagConstraints gbcR = new GridBagConstraints();
+        gbcR.insets = new Insets(15, 15, 15, 15);
 
-
-        JPanel bottomButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
-        bottomButtons.setOpaque(false);
-
-        bottomButtons.add(new Button("Category",e->newPassword()));
-        bottomButtons.add(new Button("userShare",e->newPassword()));
-
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        gbc.weightx = 0.6;
-        gbc.weighty = 1;
-        gbc.anchor = GridBagConstraints.SOUTH;
-
-        contentPanel.add(bottomButtons, gbc);
-
-
-
-
-
-
-
-
-
+        //Button buttonAddPassword = new Button("addPassword", e -> newPassword());
+        AddPasswordPanel addPasswordPanel = new AddPasswordPanel();
+        gbcR.gridx = 0;
+        gbcR.gridy = 0;
+        gbcR.weightx = 1.0;
+        gbcR.weighty = 0;
+        gbcR.anchor = GridBagConstraints.NORTH;
+        //rightPanel.add(buttonAddPassword, gbcR);
+        rightPanel.add(addPasswordPanel, gbcR);
 
 
     }
 
     private void updatePasswords() {
         passwords.add(new Password(
-                "Netflix","raphel.0@gmail.com","1234","https://www.netflix.com"));
+                "Netflix", "raphel.0@gmail.com", "1234", "https://www.netflix.com"));
         passwords.add(new Password(
-                "Google gmail","raphael.0@gmail.com","12345",""));
+                "Google gmail", "raphael.0@gmail.com", "12345", ""));
         passwords.add(new Password(
                 "Spotify", "raphael.0@gmail.com", "5678", "https://www.spotify.com"));
         passwords.add(new Password(
@@ -101,14 +89,15 @@ public class HomePanel extends JPanel {
                 "Facebook", "raphael.0@fb.com", "fbpass123", "https://www.facebook.com"));
     }
 
-    private void newPassword(){}
+    //TODO
+    private void newPassword() {
+    }
 
     static void main() {
         JFrame frame = new JFrame("Exemple Header");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
 
-        //WindowManager manager = new WindowManager();
         HomePanel panel = new HomePanel(null);
         frame.add(panel);
 

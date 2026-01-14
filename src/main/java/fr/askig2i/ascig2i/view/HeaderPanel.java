@@ -46,14 +46,22 @@ public class HeaderPanel extends JPanel {
         add(titleLabel, gbc);
 
         // === Button ===
-        Button btnLogin = new Button("UnLog",e->unlog());
+
+
+
+
+        JPanel Buttons = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        Buttons.setOpaque(false);
+        Buttons.add(new Button("Category", e -> unlog()));
+        Buttons.add(new Button("userShare", e -> unlog()));
+        Buttons.add(new Button("UnLog",e->unlog()));
 
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.weightx = 0;
         gbc.anchor = GridBagConstraints.EAST;
 
-        add(btnLogin, gbc);
+        add(Buttons, gbc);
 
 
 
