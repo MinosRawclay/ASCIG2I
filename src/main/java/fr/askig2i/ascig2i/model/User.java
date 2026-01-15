@@ -70,6 +70,22 @@ public class User {
             password.setUser(this);
         }
     }
+    public List<Category> getCategories() {
+        List<Category> temp = new ArrayList<>();
+        for(Password pwd : this.passwordSet){
+            for(Category category : pwd.getCategories()){
+                if(category != null && !temp.contains(category)){temp.add(category);}
+            }
+        }
+        temp.sort((c1,c2)->c1.getName().compareTo(c2.getName()));
+        return temp;
+    }
+
+    public List<Category> getCategoryInFrom(List<Category> list,List<String> selected){
+        List<Category> temp = new ArrayList<>();
+        //for (String s : selected) {}
+        return temp;
+    }
 
     @Override
     public String toString() {

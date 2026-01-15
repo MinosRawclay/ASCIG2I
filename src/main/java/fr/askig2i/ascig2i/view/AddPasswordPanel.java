@@ -1,6 +1,13 @@
 package fr.askig2i.ascig2i.view;
 
+import fr.askig2i.ascig2i.model.Category;
+import fr.askig2i.ascig2i.model.EncryptionManager;
+import fr.askig2i.ascig2i.model.Password;
 import fr.askig2i.ascig2i.model.User;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,6 +28,7 @@ public class AddPasswordPanel extends  UiPanel {
     private final JTextField passwordField;
     private final JTextField imageLinkField;
     private final JButton addButton;
+    private final JButton updateButton;
     private ImageIcon icon;
     private final JLabel logoLabel;
 
@@ -30,8 +38,14 @@ public class AddPasswordPanel extends  UiPanel {
     private MultiSelectPanel shareMultiSelect;
     private final JLabel selectedCategoriesLabel;
     private final JLabel selectedUsersLabel;
+    private EntityTransaction et;
+    private EntityManager em;
 
     public AddPasswordPanel(User user_) {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ASCIG2I");
+        em = emf.createEntityManager();
+        et = em.getTransaction();
+
         user = user_;
         setLayout(null);
         setPreferredSize(new Dimension(450, 420));
@@ -173,6 +187,13 @@ public class AddPasswordPanel extends  UiPanel {
         addButton.setBackground(new Color(90, 90, 90));
         add(addButton);
 
+        // Update button
+        updateButton = new Button("Update", e->updatePassword());
+        updateButton.setBounds(40, yStart + yGap * 4 + 115, 100, 40);
+        updateButton.setBackground(new Color(90, 90, 90));
+        updateButton.setVisible(false);
+        add(updateButton);
+
         // Listener global pour fermer les MultiSelectPanel en cliquant ailleurs
         addMouseListener(new MouseAdapter() {
             @Override
@@ -284,32 +305,80 @@ public class AddPasswordPanel extends  UiPanel {
         System.out.println(imageLinkField.getText());
         System.out.println(selectedCategoriesLabel.getText());
         System.out.println(selectedUsersLabel.getText());
+
+        et.begin();
+        Password password1 = new Password(
+                servNameField.getText(),
+                loginField.getText(),
+                passwordField.getText(),
+                imageLinkField.getText());
+
+
+
     }
 
+    //TODO
+    private void updatePassword(){
+        System.out.println("Updating password");
+        System.out.println(servNameField.getText());
+        System.out.println(loginField.getText());
+        System.out.println(passwordField.getText());
+        System.out.println(imageLinkField.getText());
+        System.out.println(selectedCategoriesLabel.getText());
+        System.out.println(selectedUsersLabel.getText());
 
-    // Getters
-    public JTextField getServNameField() {
-        return servNameField;
+
     }
 
-    public JTextField getLoginField() {
-        return loginField;
+    public void setAll(Password password){
+        servNameField.setText(password.getServiceName());
+        loginField.setText(password.getLogin());
+        passwordField.setText(EncryptionManager.decrypt(password.getEncryptedPassword(),password.getLogin().hashCode()));
+        imageLinkField.setText(password.getUrl());
+        updateIcon();
+        setCategories(password);
+        setShare(password);
+        addButton.setVisible(false);
+        updateButton.setVisible(true);
     }
 
-    public JTextField getImageLinkField() {
-        return imageLinkField;
+    public void unselectAll(){
+        servNameField.setText("");
+        loginField.setText("");
+        passwordField.setText("");
+        imageLinkField.setText("");
+        updateIcon();
+        setCategories(null);
+        setShare(null);
+
+        addButton.setVisible(true);
+        updateButton.setVisible(false);
     }
 
-    public JButton getAddButton() {
-        return addButton;
+    public void setCategories(Password password){
+        if (password == null) {
+            categoryMultiSelect.unselectAll();
+            return;
+        }
+        List<Category> categories = new ArrayList<>();
+        List<String> categoriesS = new ArrayList<>();
+        //TODO récuperer les catégories d'un password avec la BDD
+        //TODO puis convertir en le type categoriesS
+
+        categoryMultiSelect.setSelectedElements(categoriesS);
     }
 
-    public Set<String> getSelectedCategories() {
-        return categoryMultiSelect.getSelectedElements();
-    }
+    public void setShare(Password password){
+        if (password == null) {
+            categoryMultiSelect.unselectAll();
+            return;
+        }
+        List<User> users = new ArrayList<>();
+        List<String> usersS = new ArrayList<>();
+        //TODO récuperer les user d'un password avec la BDD
+        //TODO puis convertir en le type categoriesS
 
-    public Set<String> getSelectedUsers() {
-        return shareMultiSelect.getSelectedElements();
+        shareMultiSelect.setSelectedElements(usersS);
     }
 
     public static void main(String[] args) {

@@ -54,7 +54,7 @@ public class WindowManager extends JFrame {
 
     public void goHome(){
         this.loginPanel.setVisible(false);
-        //homePanel = new HomePanel(this,user);
+        homePanel = new HomePanel(this,user);
         this.add(homePanel, BorderLayout.CENTER);
         homePanel.setVisible(true);
         this.setVisible(true);

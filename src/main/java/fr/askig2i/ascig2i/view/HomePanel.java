@@ -24,12 +24,11 @@ public class HomePanel extends JPanel {
 
     private ArrayList<Password> passwords = new ArrayList<>();
 
-    public HomePanel() {//WindowManager manager, User user_
-        //this.manager = manager;
-        //user = user_;
+    public HomePanel(WindowManager manager, User user_) {
+        this.manager = manager;
+        user = user_;
 
-        setOpaque(true);
-        setBackground(Color.blue);
+        setOpaque(false);
         setLayout(new BorderLayout());
 
         // HEADER
@@ -37,7 +36,7 @@ public class HomePanel extends JPanel {
 
         // CONTENU CENTRAL
         JPanel contentPanel = new JPanel(new GridBagLayout());
-        contentPanel.setBackground(new Color(130, 110, 255));
+        contentPanel.setOpaque(false);
         add(contentPanel, BorderLayout.CENTER);
         GridBagConstraints gbcC = new GridBagConstraints();
         gbcC.insets = new Insets(15, 15, 15, 15);
@@ -45,7 +44,7 @@ public class HomePanel extends JPanel {
 
         // CONTENU GAUCHE - Augmentation de la largeur
         JPanel leftPanel = new JPanel(new BorderLayout());
-        leftPanel.setBackground(new Color(130, 110, 255));
+        leftPanel.setOpaque(false);
         gbcC.gridx = 0;
         gbcC.gridy = 0;
         gbcC.weightx = 0.65; // Augmenté de 0.6 à 0.65
@@ -53,14 +52,14 @@ public class HomePanel extends JPanel {
         contentPanel.add(leftPanel, gbcC);
 
         updatePasswords();
-        scrollPanel = new ScrollPanel(passwords);
+        scrollPanel = new ScrollPanel(passwords,this);
         scrollPanel.setPreferredSize(new Dimension(450, 500)); // Largeur minimale garantie
-        scrollPanel.addSelectionListener(e -> selectionerPsw());
+        //scrollPanel.addSelectionListener(e -> selectionerPsw());
         leftPanel.add(scrollPanel, BorderLayout.CENTER);
 
         // CONTENU DROITE
         JPanel rightPanel = new JPanel(new GridBagLayout());
-        rightPanel.setBackground(new Color(130, 110, 255));
+        rightPanel.setOpaque(false);
         gbcC.gridx = 1;
         gbcC.weightx = 0.35; // Ajusté de 0.4 à 0.35
         contentPanel.add(rightPanel, gbcC);
@@ -95,8 +94,12 @@ public class HomePanel extends JPanel {
     }
 
 
-    private void selectionerPsw() {
+    public void selectCard(Password password) {
+        addPasswordPanel.setAll(password);
+    }
 
+    public void unSelectCard() {
+        addPasswordPanel.unselectAll();
     }
 
     //TODO
@@ -143,8 +146,8 @@ public class HomePanel extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
 
-        HomePanel panel = new HomePanel();
-        frame.add(panel);
+        //HomePanel panel = new HomePanel();
+        //frame.add(panel);
 
         frame.setVisible(true);
     }

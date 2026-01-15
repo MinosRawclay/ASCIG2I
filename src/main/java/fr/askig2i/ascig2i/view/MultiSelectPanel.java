@@ -186,6 +186,18 @@ public class MultiSelectPanel extends UiPanel {
         buttonsPanel.repaint();
     }
 
+    public void setSelectedElements(List<String> selectedElements) {
+        for (String element : selectedElements) {
+            buttons.get(selectedElements.indexOf(element)).setSelected(true);
+        }
+    }
+
+    public void unselectAll() {
+        for (JToggleButton button : buttons){
+            button.setSelected(false);
+        }
+    }
+
     // Méthode main pour tester
     public static void main(String[] args) {
         JFrame frame = new JFrame("Multi Select Panel Demo");

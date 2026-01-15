@@ -1,6 +1,7 @@
 package fr.askig2i.ascig2i.view;
 
 import fr.askig2i.ascig2i.model.Password;
+import fr.askig2i.ascig2i.model.User;
 
 
 import javax.swing.*;
@@ -11,8 +12,10 @@ import java.util.ArrayList;
 public class ScrollPanel extends JPanel {
 
     private CardPanel selectedCard;
+    private HomePanel homePanel;
 
-    ScrollPanel(ArrayList<Password> passwords) {
+    ScrollPanel(ArrayList<Password> passwords, HomePanel homePanel) {
+        this.homePanel = homePanel;
         // Rendre le ScrollPanel transparent
         setOpaque(false);
 
@@ -29,6 +32,7 @@ public class ScrollPanel extends JPanel {
                 if (selectedCard == card) {
                     card.setSelected(false);
                     selectedCard = null;
+                    homePanel.unSelectCard();
                     return;
                 }
                 // Sinon, on change la sélection
@@ -37,6 +41,7 @@ public class ScrollPanel extends JPanel {
                 }
                 card.setSelected(true);
                 selectedCard = card;
+                homePanel.selectCard(selectedCard.getPsw());
             });
             mainPanel.add(cardPanel);
             mainPanel.add(Box.createRigidArea(new Dimension(0, 10))); // espace entre cartes
@@ -48,7 +53,9 @@ public class ScrollPanel extends JPanel {
         scrollPane.getViewport().setOpaque(false); // Rendre le viewport transparent
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setPreferredSize(new Dimension(300, 600));
+        scrollPane.setPreferredSize(new Dimension(500, 700));
+        scrollPane.setMaximumSize(new Dimension(600, 700));
+        scrollPane.setMinimumSize(new Dimension(300, 300));
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
@@ -70,6 +77,8 @@ public class ScrollPanel extends JPanel {
         this.selectedCard = newCard;
         firePropertyChange("selectedCard", oldCard, newCard);
     }
+
+
 
     static void main() {
         JFrame frame = new JFrame();
@@ -97,7 +106,7 @@ public class ScrollPanel extends JPanel {
 
 
 
-        ScrollPanel scrollPanel = new ScrollPanel(passwords);
+        ScrollPanel scrollPanel = new ScrollPanel(passwords,new HomePanel(new WindowManager(),new User()));
         frame.add(scrollPanel);
         frame.setVisible(true);
     }

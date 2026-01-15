@@ -41,6 +41,10 @@ public class Category {
         passwordSet = new HashSet<>();
     }
 
+    public boolean containS (String s) {
+        return false;
+    }
+
     public void addPassword(Password password){
         if(password != null && !this.passwordSet.contains(password)){
             this.passwordSet.add(password);
@@ -54,5 +58,16 @@ public class Category {
         }
     }
 
+    public String getName() {
+        return name;
+    }
 
+    @Override
+    public String toString() {
+        return "Category{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

@@ -59,6 +59,9 @@ public class initBDD {
         category1.addPassword(password2);
         password2.addCategoty(category2);
 
+        user1.addPassword(password1);
+        user1.addPassword(password2);
+
         user3.addPassword(password2);
         password2.addUser(user1);
         password3.addUser(user2);
@@ -89,5 +92,8 @@ public class initBDD {
 
 
         et.commit();
+
+        user1.getCategories();
+
     }
 }
