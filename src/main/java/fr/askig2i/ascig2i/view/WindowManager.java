@@ -10,6 +10,7 @@ public class WindowManager extends JFrame {
     private User user;
     LoginPanel loginPanel;
     HomePanel homePanel;
+    CategoryPanel categoryPanel;
 
     public WindowManager() {
         setSize(600, 500);
@@ -54,17 +55,40 @@ public class WindowManager extends JFrame {
 
     public void goHome(){
         this.loginPanel.setVisible(false);
-        //homePanel = new HomePanel(this,user);
+        if(this.categoryPanel != null){
+            this.categoryPanel.setVisible(false);
+        }
+        if(this.homePanel != null){
+            this.homePanel.setVisible(false);
+        }
+        homePanel = new HomePanel(this,user);
         this.add(homePanel, BorderLayout.CENTER);
         homePanel.setVisible(true);
         this.setVisible(true);
     }
+    public void goCategory(){
+        if(this.categoryPanel != null){
+            this.categoryPanel.setVisible(false);
+        }
+        this.homePanel.setVisible(false);
+        categoryPanel = new CategoryPanel(this);
+        this.add(categoryPanel, BorderLayout.CENTER);
+        categoryPanel.setVisible(true);
+        this.setVisible(true);
+    }
+
+    public void unlog(){
+        this.homePanel.setVisible(false);
+        if(this.categoryPanel != null) this.categoryPanel.setVisible(false);
+        loginPanel = new LoginPanel(this);
+        this.add(loginPanel, BorderLayout.CENTER);
+        loginPanel.setVisible(true);
+        this.setVisible(true);    }
 
 
 
     static void main() {
         WindowManager frame = new WindowManager();
-        //frame.login();
         frame.setVisible(true);
 
     }

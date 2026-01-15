@@ -22,6 +22,7 @@ public class LoginPanel extends JPanel {
     private JPasswordField passwordField;
     private Button loginButton;
     private Button newUserButton;
+    private JLabel messageLabel;
 
     private void addPlaceholder(JTextField field, String placeholder) {
         field.setText(placeholder);
@@ -77,7 +78,7 @@ public class LoginPanel extends JPanel {
 
         centerPanel.add(textLogin, gbc);
         // ===== Champ Login =====
-        UiTexteField loginField = new UiTexteField(20);
+        loginField = new UiTexteField(20);
         //loginField.setPreferredSize(new Dimension(200, 30));
         loginField.setColumns(30);
         loginField.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -86,6 +87,7 @@ public class LoginPanel extends JPanel {
         gbc.gridwidth = 2;
         addPlaceholder(loginField, "Username");
         centerPanel.add(loginField, gbc);
+
 
         // ===== Text Password =====
         JLabel textPassword = new JLabel("Password", SwingConstants.CENTER);
@@ -99,7 +101,7 @@ public class LoginPanel extends JPanel {
         gbc.insets = new Insets(0,20,0,20);  //top padding
 
         // ===== Champ Password =====
-        UiPasswordField passwordField = new UiPasswordField(20);
+        passwordField = new UiPasswordField(20);
         passwordField.setPreferredSize(new Dimension(200, 30));
         //passwordField.setColumns(30);
         passwordField.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -110,30 +112,13 @@ public class LoginPanel extends JPanel {
         centerPanel.add(passwordField, gbc);
 
         // ==== Message ====
-        JLabel messageLabel = new JLabel("-_-");
+        messageLabel = new JLabel("-_-");
         messageLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         messageLabel.setForeground(UiTheme.TEXT_PRESSED);
 
 
         // ===== Bouton Login =====
-        Button loginButton = new Button("Login", e -> {
-            String username = loginField.getText();
-            String password = new String(passwordField.getPassword());
-
-            System.out.println(username + " : " + password);
-            // Vérification des informations de connexion
-            if ((this.user = SQLHandler.checkUser(username, password, em))!=null) {
-                System.out.println("TEST1");
-                messageLabel.setText("Successfully logged!");
-                messageLabel.setForeground(Color.GREEN);
-                this.manager.setConnected(this.user);
-                manager.goHome();
-            } else {
-                System.out.println("TEST2");
-                messageLabel.setText("Username or Password Incorrect.");
-                messageLabel.setForeground(Color.RED);
-            }
-        });
+        loginButton = new Button("Login", e -> login());
         loginButton.setPreferredSize(new Dimension(180, 40));
         loginButton.setOpacity(220);
         gbc.gridx = 1;
@@ -143,7 +128,7 @@ public class LoginPanel extends JPanel {
         centerPanel.add(loginButton, gbc);
 
         // ===== Bouton New User =====
-        Button newUserButton = new Button("New User", e -> {
+        newUserButton = new Button("New User", e -> {
             System.out.println("New User");
         });
         newUserButton.setPreferredSize(new Dimension(180, 40));
@@ -166,6 +151,25 @@ public class LoginPanel extends JPanel {
         add(centerPanel);
     }
 
+    private void login(){
+        String username = loginField.getText();
+        String password = new String(passwordField.getPassword());
+
+        System.out.println(username + " : " + password);
+        // Vérification des informations de connexion
+        if ((this.user = SQLHandler.checkUser(username, password, em))!=null) {
+            System.out.println("TEST1");
+            messageLabel.setText("Successfully logged!");
+            messageLabel.setForeground(Color.GREEN);
+            this.manager.setConnected(this.user);
+            manager.goHome();
+        } else {
+            System.out.println("TEST2");
+            messageLabel.setText("Username or Password Incorrect.");
+            messageLabel.setForeground(Color.RED);
+        }
+    }
+
     // ===== Actions =====
     protected void onLogin() {
         String login = loginField.getText();
@@ -173,6 +177,8 @@ public class LoginPanel extends JPanel {
 
         System.out.println("Login: " + login);
     }
+
+
 
     protected void onNewUser() {
         System.out.println("New User clicked");

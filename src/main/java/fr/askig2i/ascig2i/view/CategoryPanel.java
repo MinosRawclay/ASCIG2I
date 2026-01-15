@@ -1,27 +1,42 @@
 package fr.askig2i.ascig2i.view;
 
+import fr.askig2i.ascig2i.SQLHandler;
+import fr.askig2i.ascig2i.model.Category;
+import fr.askig2i.ascig2i.model.Password;
 import fr.askig2i.ascig2i.model.User;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CategoryPanel extends JPanel {
+
+    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("ASCIG2I");
+    private EntityManager em = emf.createEntityManager();
     private User user;
+    private WindowManager manager;
 
 
     private final MultiSelectPanel categoryMultiSelect;
     private JLabel labelCategory;
     private JTextField fieldCategory;
+    private JTextField fieldDesc;
 
 
-    public CategoryPanel() {
+    public CategoryPanel(WindowManager mg) {
+        this.manager = mg;
         setOpaque(true);
         setBackground(Color.blue);
         setLayout(new BorderLayout());
 
         // HEADER
-        add(new HeaderPanel(), BorderLayout.NORTH);
+        add(new HeaderPanel(manager), BorderLayout.NORTH);
 
         // CONTENU CENTRAL
         JPanel contentPanel = new JPanel(new GridBagLayout());
@@ -118,6 +133,17 @@ public class CategoryPanel extends JPanel {
         ));
         formPanel.add(fieldCategory);
 
+        // Champ desc
+        fieldDesc = new JTextField();
+        fieldDesc.setBounds(30, 80, 390, 40);
+        fieldDesc.setFont(new Font("Arial", Font.PLAIN, 16));
+        fieldDesc.setBackground(Color.WHITE);
+        fieldDesc.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(180, 180, 180), 2),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+        formPanel.add(fieldDesc);
+
         // Bouton ajouter
         Button addButton = new Button("Ajouter", e -> addCategory());
         addButton.setBounds(30, 140, 150, 40);
@@ -128,28 +154,27 @@ public class CategoryPanel extends JPanel {
         // Glue pour pousser vers le haut
         rightPanel.add(Box.createVerticalGlue());
     }
-    //TODO remplacer la fonction par un appel BDD
+
+    // RAPHAEL TODO => PB AFFICHAGE
     private void addCategory() {
         System.out.println("addCategory");
-        System.out.println(fieldCategory.getText());
+        Category c1 = new Category(
+                fieldCategory.getText(), fieldDesc.getText());
+        SQLHandler.saveNewCategory(c1, em);
+        manager.goCategory();
     }
 
-    //TODO remplacer la liste par un appel BDD
     private void deleteCategories() {
         System.out.println("Deleting categories");
-        System.out.println(categoryMultiSelect.getSelectedElements());
+        //RAPHAEL TODO prend la category select (le nom mais jpeux modif pour la cat)
+        //SQLHandler.deleteCategory(?, em);
     }
 
-    //TODO remplacer la liste par un appel BDD
     private void updateCategory(){
         List<String> categories = new ArrayList<>();
-        categories.add("Réseaux");
-        categories.add("Travail");
-        categories.add("Personnel");
-        categories.add("Finance");
-        categories.add("Gaming");
-        categories.add("Admin");
-        categories.add("Ig2I");
+        for(Category c : (List<Category>) Objects.requireNonNull(SQLHandler.getCategories(em))){
+            categories.add(c.getName());
+        }
         categoryMultiSelect.setElement(categories);
     }
 
@@ -159,7 +184,7 @@ public class CategoryPanel extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1024, 860);
 
-        CategoryPanel panel = new CategoryPanel();
+        CategoryPanel panel = new CategoryPanel(new WindowManager());
         frame.add(panel);
 
         frame.setVisible(true);

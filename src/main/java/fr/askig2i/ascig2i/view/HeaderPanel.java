@@ -4,7 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class HeaderPanel extends JPanel {//
-    public HeaderPanel() {
+    private WindowManager manager;
+    public HeaderPanel(WindowManager mg) {
+        this.manager = mg;
         // ===== pas de fond =====
         setLayout(new GridBagLayout());
         setOpaque(false);
@@ -46,14 +48,9 @@ public class HeaderPanel extends JPanel {//
         add(titleLabel, gbc);
 
         // === Button ===
-
-
-
-
         JPanel Buttons = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
         Buttons.setOpaque(false);
-        Buttons.add(new Button("Category", e -> unlog()));
-        Buttons.add(new Button("userShare", e -> unlog()));
+        Buttons.add(new Button("Category", e -> goCategory()));
         Buttons.add(new Button("UnLog",e->unlog()));
 
         gbc.gridx = 2;
@@ -67,11 +64,20 @@ public class HeaderPanel extends JPanel {//
 
     }
 
-    //TODO
-    private void goHome(){}
+    private void goHome(){
+        this.setVisible(false);
+        manager.goHome();
+    }
 
     //TODO
-    private void unlog(){}
+    private void goCategory(){
+        this.setVisible(false);
+        manager.goCategory();
+    }
+
+    private void unlog(){
+        manager.unlog();
+    }
 
     static void main() {
         JFrame frame = new JFrame("Exemple Header");
@@ -79,7 +85,7 @@ public class HeaderPanel extends JPanel {//
         frame.setSize(800, 600);
 
         frame.setLayout(new BorderLayout());
-        frame.add(new HeaderPanel(), BorderLayout.NORTH);
+        frame.add(new HeaderPanel(new WindowManager()), BorderLayout.NORTH);
 
         frame.setVisible(true);
 

@@ -1,6 +1,14 @@
 package fr.askig2i.ascig2i.view;
 
+import fr.askig2i.ascig2i.SQLHandler;
+import fr.askig2i.ascig2i.model.Category;
+import fr.askig2i.ascig2i.model.EncryptionManager;
+import fr.askig2i.ascig2i.model.Password;
 import fr.askig2i.ascig2i.model.User;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,16 +19,19 @@ import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class AddPasswordPanel extends  UiPanel {
     private final User user;
+    private WindowManager manager;
 
     private final JTextField servNameField;
     private final JTextField loginField;
     private final JTextField passwordField;
     private final JTextField imageLinkField;
     private final JButton addButton;
+    private final JButton updateButton;
     private ImageIcon icon;
     private final JLabel logoLabel;
 
@@ -30,8 +41,15 @@ public class AddPasswordPanel extends  UiPanel {
     private MultiSelectPanel shareMultiSelect;
     private final JLabel selectedCategoriesLabel;
     private final JLabel selectedUsersLabel;
+    private EntityTransaction et;
+    private EntityManager em;
 
-    public AddPasswordPanel(User user_) {
+    public AddPasswordPanel(User user_, WindowManager manager) {
+        this.manager = manager;
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ASCIG2I");
+        em = emf.createEntityManager();
+        et = em.getTransaction();
+
         user = user_;
         setLayout(null);
         setPreferredSize(new Dimension(450, 420));
@@ -173,6 +191,13 @@ public class AddPasswordPanel extends  UiPanel {
         addButton.setBackground(new Color(90, 90, 90));
         add(addButton);
 
+        // Update button
+        updateButton = new Button("Update", e->updatePassword());
+        updateButton.setBounds(40, yStart + yGap * 4 + 115, 100, 40);
+        updateButton.setBackground(new Color(90, 90, 90));
+        updateButton.setVisible(false);
+        add(updateButton);
+
         // Listener global pour fermer les MultiSelectPanel en cliquant ailleurs
         addMouseListener(new MouseAdapter() {
             @Override
@@ -251,31 +276,22 @@ public class AddPasswordPanel extends  UiPanel {
         updateIcon();
     }
 
-    //TODO remplacer la liste par un appel BDD
     private void updateShared(){
         List<String> users = new ArrayList<>();
-        users.add("Raph");
-        users.add("Alice");
-        users.add("Bob");
-        users.add("Charlie");
-        users.add("David");
+        for(User u : (List<User>) Objects.requireNonNull(SQLHandler.getUsers(em)))
+        {
+            users.add(u.getLogin());
+        }
         shareMultiSelect.setElement(users);
     }
-
-    //TODO remplacer la liste par un appel BDD
     private void updateCategory(){
         List<String> categories = new ArrayList<>();
-        categories.add("Réseaux");
-        categories.add("Travail");
-        categories.add("Personnel");
-        categories.add("Finance");
-        categories.add("Gaming");
-        categories.add("Admin");
-        categories.add("Ig2I");
+        for(Category c :  (List<Category>) Objects.requireNonNull(SQLHandler.getCategories(em))){
+            categories.add(c.getName());
+        }
         categoryMultiSelect.setElement(categories);
     }
 
-    //TODO remplacer la fonction par un appel BDD
     private void addPassword(){
         System.out.println("Adding password:");
         System.out.println(servNameField.getText());
@@ -284,32 +300,79 @@ public class AddPasswordPanel extends  UiPanel {
         System.out.println(imageLinkField.getText());
         System.out.println(selectedCategoriesLabel.getText());
         System.out.println(selectedUsersLabel.getText());
+
+        et.begin();
+        Password password1 = new Password(
+                servNameField.getText(),
+                loginField.getText(),
+                passwordField.getText(),
+                imageLinkField.getText());
+        user.addPassword(password1);
+       SQLHandler.saveNewPassword(password1, em);
+
+        em.merge(user);
+        et.commit();
+        updatePassword();
+
     }
 
 
-    // Getters
-    public JTextField getServNameField() {
-        return servNameField;
+    private void updatePassword(){
+        manager.goHome();
+
     }
 
-    public JTextField getLoginField() {
-        return loginField;
+    public void setAll(Password password){
+        servNameField.setText(password.getServiceName());
+        loginField.setText(password.getLogin());
+        passwordField.setText(EncryptionManager.decrypt(password.getEncryptedPassword(),password.getLogin().hashCode()));
+        imageLinkField.setText(password.getUrl());
+        updateIcon();
+        setCategories(password);
+        setShare(password);
+        addButton.setVisible(false);
+        updateButton.setVisible(true);
     }
 
-    public JTextField getImageLinkField() {
-        return imageLinkField;
+    public void unselectAll(){
+        servNameField.setText("");
+        loginField.setText("");
+        passwordField.setText("");
+        imageLinkField.setText("");
+        updateIcon();
+        setCategories(null);
+        setShare(null);
+
+        addButton.setVisible(true);
+        updateButton.setVisible(false);
     }
 
-    public JButton getAddButton() {
-        return addButton;
+    public void setCategories(Password password){
+        if (password == null) {
+            categoryMultiSelect.unselectAll();
+            return;
+        }
+        List<Category> categories = new ArrayList<>();
+        List<String> categoriesS = new ArrayList<>();
+        categories = user.getCategories();
+        for(Category cat : categories){
+            categoriesS.add(cat.getName());
+        }
+        categoryMultiSelect.setSelectedElements(categoriesS);
     }
 
-    public Set<String> getSelectedCategories() {
-        return categoryMultiSelect.getSelectedElements();
-    }
-
-    public Set<String> getSelectedUsers() {
-        return shareMultiSelect.getSelectedElements();
+    public void setShare(Password password){
+        if (password == null) {
+            categoryMultiSelect.unselectAll();
+            return;
+        }
+        List<User> users = new ArrayList<>();
+        List<String> usersS = new ArrayList<>();
+        SQLHandler.getUsersPwd(password, em);
+        for(User u : users){
+            usersS.add(u.getLogin());
+        }
+        shareMultiSelect.setSelectedElements(usersS);
     }
 
     public static void main(String[] args) {
@@ -318,7 +381,7 @@ public class AddPasswordPanel extends  UiPanel {
         frame.setSize(450, 420);
         frame.setLocationRelativeTo(null);
 
-        AddPasswordPanel panel = new AddPasswordPanel(null);
+        AddPasswordPanel panel = new AddPasswordPanel(null, new WindowManager());
         frame.add(panel);
 
         frame.setVisible(true);
