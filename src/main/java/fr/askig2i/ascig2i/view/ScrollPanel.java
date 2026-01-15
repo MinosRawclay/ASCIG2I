@@ -4,13 +4,14 @@ import fr.askig2i.ascig2i.model.Password;
 
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
-import java.awt.geom.RoundRectangle2D;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Set;
 
 public class ScrollPanel extends JPanel {
+
+    private CardPanel selectedCard;
+
     ScrollPanel(ArrayList<Password> passwords) {
         // Rendre le ScrollPanel transparent
         setOpaque(false);
@@ -22,8 +23,24 @@ public class ScrollPanel extends JPanel {
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         // Ajout de plusieurs cartes
         passwords.forEach(p -> {
-            mainPanel.add(new CardPanel(p));
+            CardPanel cardPanel = new CardPanel(p);
+            cardPanel.setSelectionListener(card -> {
+                // Si on reclique sur la card déjà sélectionnée → toggle OFF
+                if (selectedCard == card) {
+                    card.setSelected(false);
+                    selectedCard = null;
+                    return;
+                }
+                // Sinon, on change la sélection
+                if (selectedCard != null) {
+                    selectedCard.setSelected(false);
+                }
+                card.setSelected(true);
+                selectedCard = card;
+            });
+            mainPanel.add(cardPanel);
             mainPanel.add(Box.createRigidArea(new Dimension(0, 10))); // espace entre cartes
+
         });
         // Ajout du scroll
         JScrollPane scrollPane = new JScrollPane(mainPanel);
@@ -37,76 +54,21 @@ public class ScrollPanel extends JPanel {
         JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
         verticalBar.setUnitIncrement(20);
         verticalBar.setBlockIncrement(80);
-        verticalBar.setUI(new RoundedScrollBarUI());
+        verticalBar.setUI(new UIRoundedScrollBar());
         verticalBar.setPreferredSize(new Dimension(10, 0));
         verticalBar.setOpaque(false);
 
         add(scrollPane);
     }
 
-    private static class RoundedScrollBarUI extends BasicScrollBarUI {
-        private static final int ARC = UiTheme.ARC_PANEL;
-        @Override
-        protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
-            Graphics2D g2 = (Graphics2D) g;
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    public CardPanel getSelectedCard() {
+        return selectedCard;
+    }
 
-            g2.setColor(new Color(240, 240, 240));
-            g2.fillRoundRect(
-                    trackBounds.x,
-                    trackBounds.y,
-                    trackBounds.width,
-                    trackBounds.height,
-                    ARC,
-                    ARC
-            );
-        }
-
-        @Override
-        protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {
-            Graphics2D g2 = (Graphics2D) g;
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-            // Dégradé vertical
-            GradientPaint gradient = new GradientPaint(
-                    thumbBounds.x,
-                    thumbBounds.y,
-                    UiTheme.PRIMARY_START_PRESSED,
-                    thumbBounds.x,
-                    thumbBounds.y + thumbBounds.height,
-                    UiTheme.PRIMARY_END_PRESSED
-            );
-
-            Shape thumb = new RoundRectangle2D.Float(
-                    thumbBounds.x,
-                    thumbBounds.y,
-                    thumbBounds.width,
-                    thumbBounds.height,
-                    ARC,
-                    ARC
-            );
-
-            g2.setPaint(gradient);
-            g2.fill(thumb);
-        }
-
-        @Override
-        protected JButton createDecreaseButton(int orientation) {
-            return createZeroButton();
-        }
-
-        @Override
-        protected JButton createIncreaseButton(int orientation) {
-            return createZeroButton();
-        }
-
-        private JButton createZeroButton() {
-            JButton button = new JButton();
-            button.setPreferredSize(new Dimension(0, 0));
-            button.setMinimumSize(new Dimension(0, 0));
-            button.setMaximumSize(new Dimension(0, 0));
-            return button;
-        }
+    private void setSelectedCard(CardPanel newCard) {
+        CardPanel oldCard = this.selectedCard;
+        this.selectedCard = newCard;
+        firePropertyChange("selectedCard", oldCard, newCard);
     }
 
     static void main() {

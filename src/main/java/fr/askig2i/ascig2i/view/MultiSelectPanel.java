@@ -17,8 +17,6 @@ public class MultiSelectPanel extends UiPanel {
     private JScrollPane scrollPane;
 
     public MultiSelectPanel(List<String> elements) {
-        this.selectedElements = new HashSet<>();
-        this.buttons = new ArrayList<>();
         this.selectionListeners = new ArrayList<>();
 
         setLayout(new BorderLayout());
@@ -29,36 +27,25 @@ public class MultiSelectPanel extends UiPanel {
         buttonsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
         buttonsPanel.setBackground(new Color(200, 200, 200));
 
-        // Créer un bouton pour chaque élément
-        for (String element : elements) {
-            JToggleButton button = createRoundedToggleButton(element);
-            buttons.add(button);
-            buttonsPanel.add(button);
 
-            // Ajouter un listener pour gérer la sélection
-            button.addActionListener(e -> {
-                if (button.isSelected()) {
-                    selectedElements.add(element);
-                } else {
-                    selectedElements.remove(element);
-                }
-                notifySelectionListeners();
-            });
-        }
 
         // Ajouter le scrollPane
         scrollPane = new JScrollPane(buttonsPanel);
+        scrollPane.setOpaque(false); // Rendre le JScrollPane transparent
+        scrollPane.getViewport().setOpaque(false); // Rendre le viewport transparent
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 1));
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        scrollPane.setOpaque(true);
-        scrollPane.getViewport().setBackground(new Color(200, 200, 200));
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
+        JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
+        verticalBar.setUnitIncrement(20);
+        verticalBar.setBlockIncrement(80);
+        verticalBar.setUI(new UIRoundedScrollBar());
+        verticalBar.setPreferredSize(new Dimension(10, 0));
+        verticalBar.setOpaque(false);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Calculer la hauteur préférée en fonction du nombre de lignes
-        updatePreferredSize();
+        setElement(elements);
     }
 
     private void updatePreferredSize() {
@@ -75,19 +62,21 @@ public class MultiSelectPanel extends UiPanel {
         int totalButtons = buttons.size();
         int rows = (int) Math.ceil((double) totalButtons / buttonsPerRow);
 
-        // Hauteur nécessaire (avec padding vertical)
-        int neededHeight = rows * (buttonHeight + gap) + padding * 2;
+        // IMPORTANT : La hauteur du buttonsPanel doit être la hauteur TOTALE
+        int totalHeight = rows * (buttonHeight + gap) + padding * 2;
 
-        // Limiter la hauteur maximale à 150px (environ 3 lignes)
+        // Le buttonsPanel doit avoir sa hauteur complète
+        buttonsPanel.setPreferredSize(new Dimension(380, totalHeight));
+
+        // Le MultiSelectPanel (avec scrollPane) a une hauteur limitée
         int maxHeight = 150;
-        int finalHeight = Math.min(neededHeight, maxHeight);
+        int finalHeight = Math.min(totalHeight, maxHeight);
 
         setPreferredSize(new Dimension(400, finalHeight));
         setMinimumSize(new Dimension(400, finalHeight));
-        setMaximumSize(new Dimension(400, maxHeight));
 
-        // Forcer le recalcul du layout du buttonsPanel
-        buttonsPanel.setPreferredSize(new Dimension(380, neededHeight));
+        buttonsPanel.revalidate();
+        scrollPane.revalidate();
     }
 
     private JToggleButton createRoundedToggleButton(String text) {
@@ -100,16 +89,16 @@ public class MultiSelectPanel extends UiPanel {
                 // Dégradé selon l'état (sélectionné ou non)
                 GradientPaint gradient;
                 if (isSelected()) {
-                    // Dégradé pour l'état sélectionné (bleu)
+                    // Dégradé pour l'état sélectionné
                     gradient = new GradientPaint(
-                            0, 0, new Color(70, 130, 220),
-                            0, getHeight(), new Color(50, 90, 180)
+                            0, 0, UiTheme.PRIMARY_START_PRESSED,
+                            0, getHeight(), UiTheme.PRIMARY_END_PRESSED
                     );
                 } else {
-                    // Dégradé pour l'état non sélectionné (gris foncé)
+                    // Dégradé pour l'état non sélectionné
                     gradient = new GradientPaint(
-                            0, 0, new Color(80, 80, 85),
-                            0, getHeight(), new Color(60, 60, 65)
+                            0, 0, UiTheme.PRIMARY_START,
+                            0, getHeight(), UiTheme.PRIMARY_END
                     );
                 }
 
@@ -118,9 +107,9 @@ public class MultiSelectPanel extends UiPanel {
 
                 // Texte avec couleur selon l'état
                 if (isSelected()) {
-                    g2.setColor(Color.WHITE);
+                    g2.setColor(UiTheme.TEXT_PRESSED);
                 } else {
-                    g2.setColor(new Color(200, 200, 200));
+                    g2.setColor(UiTheme.TEXT_NORMAL);
                 }
                 g2.setFont(getFont());
                 FontMetrics fm = g2.getFontMetrics();
@@ -168,25 +157,33 @@ public class MultiSelectPanel extends UiPanel {
         return selectedElements.contains(element);
     }
 
-    // Méthode pour définir les éléments sélectionnés par programmation
-    public void setSelectedElements(Set<String> elements) {
-        selectedElements.clear();
-        selectedElements.addAll(elements);
+    public void setElement(List<String> elements) {
+        buttonsPanel.removeAll();
+        selectedElements = new HashSet<>();
+        buttons =  new ArrayList<>();
 
-        // Mettre à jour l'état des boutons
-        for (JToggleButton button : buttons) {
-            button.setSelected(selectedElements.contains(button.getText()));
-        }
-        repaint();
-    }
+        // Créer un bouton pour chaque élément
+        for (String element : elements) {
+            JToggleButton button = createRoundedToggleButton(element);
+            buttons.add(button);
+            buttonsPanel.add(button);
 
-    // Méthode pour effacer toutes les sélections
-    public void clearSelection() {
-        selectedElements.clear();
-        for (JToggleButton button : buttons) {
-            button.setSelected(false);
+            // Ajouter un listener pour gérer la sélection
+            button.addActionListener(e -> {
+                if (button.isSelected()) {
+                    selectedElements.add(element);
+                } else {
+                    selectedElements.remove(element);
+                }
+                notifySelectionListeners();
+            });
         }
-        repaint();
+        // Recalculer la taille
+        updatePreferredSize();
+
+        // Forcer la mise à jour visuelle
+        buttonsPanel.revalidate();
+        buttonsPanel.repaint();
     }
 
     // Méthode main pour tester
@@ -203,6 +200,11 @@ public class MultiSelectPanel extends UiPanel {
         elements.add("element3");
         elements.add("element4");
         elements.add("element5");
+        elements.add("element6");
+        elements.add("element7");
+        elements.add("element8");
+        elements.add("element9");
+        elements.add("element10");
 
         // Créer le panel de sélection multiple
         MultiSelectPanel selectPanel = new MultiSelectPanel(elements);

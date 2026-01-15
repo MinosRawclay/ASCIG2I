@@ -38,7 +38,7 @@ public class WindowManager extends JFrame {
 
         // Mettre en param le manager dans toutes les windows
         loginPanel = new LoginPanel(this);
-        homePanel = new HomePanel(this);
+
 
         this.setLayout(new BorderLayout());
         this.add(loginPanel, BorderLayout.CENTER);
@@ -53,8 +53,10 @@ public class WindowManager extends JFrame {
     }
 
     public void goHome(){
-        this.homePanel.setVisible(false);
         this.loginPanel.setVisible(false);
+        //homePanel = new HomePanel(this,user);
+        this.add(homePanel, BorderLayout.CENTER);
+        homePanel.setVisible(true);
         this.setVisible(true);
     }
 
